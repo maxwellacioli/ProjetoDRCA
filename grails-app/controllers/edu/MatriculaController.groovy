@@ -107,7 +107,8 @@ class MatriculaController {
 		
 		aluno.addToDisciplinas(disciplina)
 		
-		flash.message = "A matrícula foi efetuada com sucesso!"
+		flash.message = message(code: 'registration.success')
+		
 		redirect action: "lsdisc", id: aluno.id
 		return
 	}
