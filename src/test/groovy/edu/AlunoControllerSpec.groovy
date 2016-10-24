@@ -7,146 +7,176 @@ import spock.lang.*
 @Mock(Aluno)
 class AlunoControllerSpec extends Specification {
 
-    def populateValidParams(params) {
-        assert params != null
+	//Integer matricula
+	//String nome
+	//Integer creditosObrigatorios
+	//Integer creditosEletivos
+	//Curso curso
 
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
-        assert false, "TODO: Provide a populateValidParams() implementation for this generated test suite"
+    def populateValidParams(params) {
+	
+        assert params != null
+		
+		params["id"] = 1
+        params["matricula"] = 98124812
+		params["nome"] = "Alex Carvalho"
+		params["creditosObrigatorios"] = 130
+		params["creditosEletivos"] = 50
+		params["curso.id"] = 1
+        
     }
 
-    void "Test the index action returns the correct model"() {
-
-        when:"The index action is executed"
+    void "A action index retorna o modelo correto"() {
+	
+        when:"A action index é executada"
             controller.index()
 
-        then:"The model is correct"
+        then:"O modelo está correto"
             !model.alunoList
             model.alunoCount == 0
     }
 
-    void "Test the create action returns the correct model"() {
-        when:"The create action is executed"
+    void "A action create retorna o modelo correto"() {
+        when:"A action create é executada"
             controller.create()
 
-        then:"The model is correctly created"
+        then:"O modelo esta correto"
             model.aluno!= null
     }
 
-    void "Test the save action correctly persists an instance"() {
+    void "A action save persiste uma instância"() {
 
-        when:"The save action is executed with an invalid instance"
+        when:"A action save é executada com uma instância inválida"
             request.contentType = FORM_CONTENT_TYPE
             request.method = 'POST'
-            def aluno = new Aluno()
+            //Esse aluno não possui parâmetros válidos, pois nenhum deles foi setado
+			def aluno = new Aluno() 			
             aluno.validate()
             controller.save(aluno)
 
-        then:"The create view is rendered again with the correct model"
+        then:"A view create é renderizada de novo"
             model.aluno!= null
             view == 'create'
 
-        when:"The save action is executed with a valid instance"
+        when:"A action save é executada com uma instância válida"
             response.reset()
             populateValidParams(params)
             aluno = new Aluno(params)
-
             controller.save(aluno)
 
-        then:"A redirect is issued to the show action"
+        then:"A página é redirecionada para a view show com id correto"
             response.redirectedUrl == '/aluno/show/1'
-            controller.flash.message != null
+            controller.flash.message != null // Mensagem Salvo com Sucesso!
             Aluno.count() == 1
     }
 
-    void "Test that the show action returns the correct model"() {
-        when:"The show action is executed with a null domain"
+    void "A action show retorna o modelo correto"() {
+	
+        when:"A action show é executada com uma instância null"
             controller.show(null)
 
-        then:"A 404 error is returned"
+        then:"Um erro 404 é retornado"
             response.status == 404
 
-        when:"A domain instance is passed to the show action"
+		when:"A action show é executada com uma instância inválida"
+            //Esse aluno não possui parâmetros válidos, pois nenhum deles foi setado
+			controller.show(new Aluno())
+
+        then:"Um erro 404 é retornado"
+            response.status == 404
+			
+        when:"A action show é executada com uma instância válida"
             populateValidParams(params)
             def aluno = new Aluno(params)
             controller.show(aluno)
 
-        then:"A model is populated containing the domain instance"
+        then:"O modelo é povoado com os dados da instância válida"
             model.aluno == aluno
     }
 
-    void "Test that the edit action returns the correct model"() {
-        when:"The edit action is executed with a null domain"
+    void "A action edit retorna o modelo correto"() {
+	
+        when:"A action edit é executada com uma instância null"
             controller.edit(null)
 
-        then:"A 404 error is returned"
+        then:"Um erro 404 é retornado"
+            response.status == 404
+			
+		when:"A action edit é executada com uma instância inválida"
+            //Esse aluno não possui parâmetros válidos, pois nenhum deles foi setado
+			controller.edit(new Aluno())
+
+        then:"Um erro 404 é retornado"
             response.status == 404
 
-        when:"A domain instance is passed to the edit action"
+        when:"A action show é executada com uma instância válida"
             populateValidParams(params)
             def aluno = new Aluno(params)
             controller.edit(aluno)
 
-        then:"A model is populated containing the domain instance"
+        then:"O modelo é povoado com os dados da instância válida"
             model.aluno == aluno
     }
 
-    void "Test the update action performs an update on a valid domain instance"() {
-        when:"Update is called for a domain instance that doesn't exist"
+    void "A action update atualiza uma instância"() {
+	
+        when:"A action update é executada com uma instância null"
             request.contentType = FORM_CONTENT_TYPE
             request.method = 'PUT'
             controller.update(null)
 
-        then:"A 404 error is returned"
+        then:"Um erro 404 é retornado e página é redirecionada para a view index"
             response.redirectedUrl == '/aluno/index'
-            flash.message != null
+            flash.message != null // Mensagem de Não Encontrado
 
-        when:"An invalid domain instance is passed to the update action"
+         when:"A action update é executada com uma instância inválida"
             response.reset()
-            def aluno = new Aluno()
+            //Esse aluno não possui parâmetros válidos, pois nenhum deles foi setado
+			def aluno = new Aluno()
             aluno.validate()
             controller.update(aluno)
 
-        then:"The edit view is rendered again with the invalid instance"
+        then:"A view create é renderizada de novo e o modelo está correto"
             view == 'edit'
             model.aluno == aluno
 
-        when:"A valid domain instance is passed to the update action"
+        when:"A action update é executada com uma instância válida"
             response.reset()
             populateValidParams(params)
             aluno = new Aluno(params).save(flush: true)
             controller.update(aluno)
 
-        then:"A redirect is issued to the show action"
+        then:"A página é redirecionada para a view show com id correto"
             aluno != null
             response.redirectedUrl == "/aluno/show/$aluno.id"
-            flash.message != null
+            flash.message != null // Mensagem Atualizado com Sucesso!
     }
 
-    void "Test that the delete action deletes an instance if it exists"() {
-        when:"The delete action is called for a null instance"
+    void "A action delete exclui uma instância"() {
+	
+        when:"A action delete é executada com uma instância nula"
             request.contentType = FORM_CONTENT_TYPE
             request.method = 'DELETE'
             controller.delete(null)
 
-        then:"A 404 is returned"
+        then:"Um erro 404 é retornado e página é redirecionada para a view index"
             response.redirectedUrl == '/aluno/index'
-            flash.message != null
+            flash.message != null // Mensagem de Não Encontrado
 
-        when:"A domain instance is created"
+        when:"Uma instância válida de aluno é criada e salva"
             response.reset()
             populateValidParams(params)
             def aluno = new Aluno(params).save(flush: true)
 
-        then:"It exists"
+        then:"Ela existe"
             Aluno.count() == 1
 
-        when:"The domain instance is passed to the delete action"
-            controller.delete(aluno)
+        when:"A action delete é executada com a instância"
+			controller.delete(aluno)
 
-        then:"The instance is deleted"
+        then:"A instância é excluída"
             Aluno.count() == 0
             response.redirectedUrl == '/aluno/index'
-            flash.message != null
+            flash.message != null // Mesagem de Excluído com Sucesso!
     }
 }

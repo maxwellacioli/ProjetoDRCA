@@ -4,7 +4,7 @@ import grails.transaction.Transactional
 
 class MatriculaController {
 
-    def index(Integer max) {
+	def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond Aluno.list(params), model:[alunoCount: Aluno.count()]
     }
@@ -12,7 +12,7 @@ class MatriculaController {
 	def lsdisc(Aluno aluno) {
 	
 		if (aluno == null) {
-            redirect(view: 'index')
+            redirect view: 'index'
 			return
         }
 		
@@ -26,7 +26,12 @@ class MatriculaController {
 	@Transactional
 	def trymatr(Disciplina disciplina) {
 		
-		def aluno = Aluno.findById(params?.a)
+		def aluno
+		def alunoId = params?.a
+		
+		if(alunoId != null) {
+			aluno = Aluno.findById(params?.a)
+		}
 		
 		if (disciplina == null || aluno == null) {
             transactionStatus.setRollbackOnly()
@@ -34,8 +39,8 @@ class MatriculaController {
 			return
         }
 
-		def secretariaDoAluno = aluno.curso.secretaria
-		def secretariaDaDisciplina = disciplina.curso.secretaria
+		def secretariaDoAluno = aluno.curso?.secretaria
+		def secretariaDaDisciplina = disciplina.curso?.secretaria
 		def disciplinaList = findDisciplinasByDepartamento(secretariaDoAluno.departamento)
 		
 		def idDepartamentoDoAluno = secretariaDoAluno.departamento.id
@@ -107,8 +112,7 @@ class MatriculaController {
 		
 		aluno.addToDisciplinas(disciplina)
 		
-		flash.message = message(code: 'registration.success')
-		
+		flash.message = "A matrícula foi efetuada com sucesso!"
 		redirect action: "lsdisc", id: aluno.id
 		return
 	}
@@ -133,6 +137,8 @@ class MatriculaController {
 				}
 			}
 		}
+		
+		if(listDisciplinas.isEmpty()) return null
 		
 		return listDisciplinas
 		
