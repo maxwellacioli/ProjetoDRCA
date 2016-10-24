@@ -28,43 +28,43 @@ class AlunoControllerSpec extends Specification {
 
     void "A action index retorna o modelo correto"() {
 	
-        when:"A action index √© executada"
+        when:"A action index È executada"
             controller.index()
 
-        then:"O modelo est√° correto"
+        then:"O modelo est· correto"
             !model.alunoList
             model.alunoCount == 0
     }
 
     void "A action create retorna o modelo correto"() {
-        when:"A action create √© executada"
+        when:"A action create È executada"
             controller.create()
 
         then:"O modelo esta correto"
             model.aluno!= null
     }
 
-    void "A action save persiste uma inst√¢ncia"() {
+    void "A action save persiste uma inst‚ncia"() {
 
-        when:"A action save √© executada com uma inst√¢ncia inv√°lida"
+        when:"A action save È executada com uma inst‚ncia inv·lida"
             request.contentType = FORM_CONTENT_TYPE
             request.method = 'POST'
-            //Esse aluno n√£o possui par√¢metros v√°lidos, pois nenhum deles foi setado
+            //Esse aluno nÌ£o possui par‚metros v·lidos, pois nenhum deles foi setado
 			def aluno = new Aluno() 			
             aluno.validate()
             controller.save(aluno)
 
-        then:"A view create √© renderizada de novo"
+        then:"A view create È renderizada de novo"
             model.aluno!= null
             view == 'create'
 
-        when:"A action save √© executada com uma inst√¢ncia v√°lida"
+        when:"A action save È executada com uma inst‚ncia v·lida"
             response.reset()
             populateValidParams(params)
             aluno = new Aluno(params)
             controller.save(aluno)
 
-        then:"A p√°gina √© redirecionada para a view show com id correto"
+        then:"A p·gina È redirecionada para a view show com id correto"
             response.redirectedUrl == '/aluno/show/1'
             controller.flash.message != null // Mensagem Salvo com Sucesso!
             Aluno.count() == 1
@@ -72,98 +72,98 @@ class AlunoControllerSpec extends Specification {
 
     void "A action show retorna o modelo correto"() {
 	
-        when:"A action show √© executada com uma inst√¢ncia null"
+        when:"A action show È executada com uma inst‚ncia null"
             controller.show(null)
 
-        then:"Um erro 404 √© retornado"
+        then:"Um erro 404 È retornado"
             response.status == 404
 
-		when:"A action show √© executada com uma inst√¢ncia inv√°lida"
-            //Esse aluno n√£o possui par√¢metros v√°lidos, pois nenhum deles foi setado
+		when:"A action show È executada com uma inst‚ncia inv·lida"
+            //Esse aluno nÌ£o possui par‚metros v·lidos, pois nenhum deles foi setado
 			controller.show(new Aluno())
 
-        then:"Um erro 404 √© retornado"
+        then:"Um erro 404 È retornado"
             response.status == 404
 			
-        when:"A action show √© executada com uma inst√¢ncia v√°lida"
+        when:"A action show È executada com uma inst‚ncia v·lida"
             populateValidParams(params)
             def aluno = new Aluno(params)
             controller.show(aluno)
 
-        then:"O modelo √© povoado com os dados da inst√¢ncia v√°lida"
+        then:"O modelo È povoado com os dados da inst‚ncia v·lida"
             model.aluno == aluno
     }
 
     void "A action edit retorna o modelo correto"() {
 	
-        when:"A action edit √© executada com uma inst√¢ncia null"
+        when:"A action edit È executada com uma inst‚ncia null"
             controller.edit(null)
 
-        then:"Um erro 404 √© retornado"
+        then:"Um erro 404 È retornado"
             response.status == 404
 			
-		when:"A action edit √© executada com uma inst√¢ncia inv√°lida"
-            //Esse aluno n√£o possui par√¢metros v√°lidos, pois nenhum deles foi setado
+		when:"A action edit È executada com uma inst‚ncia inv·lida"
+            //Esse aluno nÌ£o possui par‚metros v·lidos, pois nenhum deles foi setado
 			controller.edit(new Aluno())
 
-        then:"Um erro 404 √© retornado"
+        then:"Um erro 404 È retornado"
             response.status == 404
 
-        when:"A action show √© executada com uma inst√¢ncia v√°lida"
+        when:"A action show È executada com uma inst‚ncia v·lida"
             populateValidParams(params)
             def aluno = new Aluno(params)
             controller.edit(aluno)
 
-        then:"O modelo √© povoado com os dados da inst√¢ncia v√°lida"
+        then:"O modelo È povoado com os dados da inst‚ncia v·lida"
             model.aluno == aluno
     }
 
-    void "A action update atualiza uma inst√¢ncia"() {
+    void "A action update atualiza uma inst‚ncia"() {
 	
-        when:"A action update √© executada com uma inst√¢ncia null"
+        when:"A action update È executada com uma inst‚ncia null"
             request.contentType = FORM_CONTENT_TYPE
             request.method = 'PUT'
             controller.update(null)
 
-        then:"Um erro 404 √© retornado e p√°gina √© redirecionada para a view index"
+        then:"Um erro 404 È retornado e p·gina È redirecionada para a view index"
             response.redirectedUrl == '/aluno/index'
-            flash.message != null // Mensagem de N√£o Encontrado
+            flash.message != null // Mensagem de NÌ£o Encontrado
 
-         when:"A action update √© executada com uma inst√¢ncia inv√°lida"
+         when:"A action update È executada com uma inst‚ncia inv·lida"
             response.reset()
-            //Esse aluno n√£o possui par√¢metros v√°lidos, pois nenhum deles foi setado
+            //Esse aluno nÌ£o possui par‚metros v·lidos, pois nenhum deles foi setado
 			def aluno = new Aluno()
             aluno.validate()
             controller.update(aluno)
 
-        then:"A view create √© renderizada de novo e o modelo est√° correto"
+        then:"A view create È renderizada de novo e o modelo est· correto"
             view == 'edit'
             model.aluno == aluno
 
-        when:"A action update √© executada com uma inst√¢ncia v√°lida"
+        when:"A action update È executada com uma inst‚ncia v·lida"
             response.reset()
             populateValidParams(params)
             aluno = new Aluno(params).save(flush: true)
             controller.update(aluno)
 
-        then:"A p√°gina √© redirecionada para a view show com id correto"
+        then:"A p·gina È redirecionada para a view show com id correto"
             aluno != null
             response.redirectedUrl == "/aluno/show/$aluno.id"
             flash.message != null // Mensagem Atualizado com Sucesso!
     }
 
-    void "A action delete exclui uma inst√¢ncia"() {
+    void "A action delete exclui uma inst‚ncia"() {
 	
-        when:"A action delete √© executada com uma inst√¢ncia nula"
+        when:"A action delete È executada com uma inst‚ncia nula"
             request.contentType = FORM_CONTENT_TYPE
             request.method = 'DELETE'
             controller.delete(null)
 
-        then:"Um erro 404 √© retornado e p√°gina √© redirecionada para a view index"
+        then:"Um erro 404 È retornado e p·gina È redirecionada para a view index"
             response.redirectedUrl == '/aluno/index'
-            flash.message != null // Mensagem de N√£o Encontrado
+            flash.message != null // Mensagem de NÌ£o Encontrado
 
-        when:"Uma inst√¢ncia v√°lida de aluno √© criada e salva"
+        when:"Uma inst‚ncia v·lida de aluno È criada e salva"
             response.reset()
             populateValidParams(params)
             def aluno = new Aluno(params).save(flush: true)
@@ -171,12 +171,12 @@ class AlunoControllerSpec extends Specification {
         then:"Ela existe"
             Aluno.count() == 1
 
-        when:"A action delete √© executada com a inst√¢ncia"
+        when:"A action delete È executada com a inst‚ncia"
 			controller.delete(aluno)
 
-        then:"A inst√¢ncia √© exclu√≠da"
+        then:"A inst‚ncia È excluÌ≠da"
             Aluno.count() == 0
             response.redirectedUrl == '/aluno/index'
-            flash.message != null // Mesagem de Exclu√≠do com Sucesso!
+            flash.message != null // Mesagem de ExcluÌ≠do com Sucesso!
     }
 }
