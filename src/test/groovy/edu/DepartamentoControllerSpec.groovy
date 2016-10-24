@@ -10,9 +10,9 @@ class DepartamentoControllerSpec extends Specification {
     def populateValidParams(params) {
         assert params != null
 
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
-        assert false, "TODO: Provide a populateValidParams() implementation for this generated test suite"
+		params["id"] = 1
+		params["nome"] = "Departamento de Informática"
+		params["drca.id"] = 1
     }
 
     void "Test the index action returns the correct model"() {

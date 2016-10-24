@@ -17,7 +17,7 @@ class CursoController {
         respond curso
     }
 
-    def create() {
+    def create() {		
         respond new Curso(params)
     }
 
